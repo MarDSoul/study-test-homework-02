@@ -1,10 +1,9 @@
 package study.test;
 
 public class Main {
-    public static void main(String[] args) {
-        System.out.println("Hello and welcome!");
-        for (int i = 1; i <= 5; i++) {
-            System.out.println("i = " + i);
-        }
+    public static void main(String[] args) throws Exception {
+        GetDeliveryCost getDeliveryCost = new GetDeliveryCostImpl();
+        int cost = getDeliveryCost.invoke(30, PackageSize.BIG, true, Workload.NORMAL);
+        System.out.println("Delivery cost: \u20BD" + cost);
     }
 }
