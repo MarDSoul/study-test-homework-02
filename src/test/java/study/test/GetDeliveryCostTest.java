@@ -19,50 +19,7 @@ class GetDeliveryCostTest {
         getDeliveryCost = new GetDeliveryCostImpl();
     }
 
-    @Test
-    @Tag("Negative")
-    @DisplayName("Negative tests with negative distance")
-    void getDeliveryCost_negativeDistance_negative_test() throws Exception {
-        Exception thrown =
-                assertThrows(
-                        Exception.class,
-                        () -> getDeliveryCost.invoke(-1, PackageSize.SMALL, false, Workload.NORMAL)
-                );
-        assertEquals(ErrorMessages.NEGATIVE_DISTANCE_ERROR, thrown.getMessage());
-    }
-
-    @Test
-    @Tag("Negative")
-    @DisplayName("Negative tests with fragile package")
-    void getDeliveryCost_fragilePackage_negative_test() throws Exception {
-        Exception thrown =
-                assertThrows(
-                        Exception.class,
-                        () -> getDeliveryCost.invoke(31, PackageSize.SMALL, true, Workload.NORMAL)
-                );
-        assertEquals(ErrorMessages.FRAGILE_PACKAGE_ERROR, thrown.getMessage());
-    }
-
-    @Test
-    @Tag("Negative")
-    @DisplayName("Negative tests with null params")
-    void getDeliveryCost_nullParams_negative_test() throws Exception {
-        Exception trowSizeNull =
-                assertThrows(
-                        Exception.class,
-                        () -> getDeliveryCost.invoke(31, null, true, Workload.NORMAL)
-                );
-        assertEquals(ErrorMessages.PARAMS_NULL_ERROR, trowSizeNull.getMessage());
-
-        Exception trowWorkloadNull =
-                assertThrows(
-                        Exception.class,
-                        () -> getDeliveryCost.invoke(31, PackageSize.SMALL, true, null)
-                );
-        assertEquals(ErrorMessages.PARAMS_NULL_ERROR, trowWorkloadNull.getMessage());
-    }
-
-    /*
+        /*
         Pairwise positive  distance <2
         distance,   packageSize,    isFragile,  workload
         <=2,         big,            true,       normal
@@ -86,7 +43,7 @@ class GetDeliveryCostTest {
     @ParameterizedTest
     @MethodSource("paramsDistanceBefore2")
     @Tag("Positive")
-    @DisplayName("Positive tests with distance <=2")
+    @DisplayName("Tests with distance <=2")
     void getDeliveryCost_distanceBefore2_positive_test(Pair<Integer, Object[]> params) throws Exception {
         positiveAssert(params);
     }
@@ -115,7 +72,7 @@ class GetDeliveryCostTest {
     @ParameterizedTest
     @MethodSource("paramsDistanceBefore10")
     @Tag("Positive")
-    @DisplayName("Positive tests with distance <=10")
+    @DisplayName("Tests with distance <=10")
     void getDeliveryCost_distanceBefore10_positive_test(Pair<Integer, Object[]> params) throws Exception {
         positiveAssert(params);
     }
@@ -144,7 +101,7 @@ class GetDeliveryCostTest {
     @ParameterizedTest
     @MethodSource("paramsDistanceBefore30")
     @Tag("Positive")
-    @DisplayName("Positive tests with distance <=30")
+    @DisplayName("Tests with distance <=30")
     void getDeliveryCost_distanceBefore30_positive_test(Pair<Integer, Object[]> params) throws Exception {
         positiveAssert(params);
     }
@@ -167,7 +124,7 @@ class GetDeliveryCostTest {
     @ParameterizedTest
     @MethodSource("paramsDistanceAbove30")
     @Tag("Positive")
-    @DisplayName("Positive tests with distance >30")
+    @DisplayName("Tests with distance >30")
     void getDeliveryCost_distanceAbove30_positive_test(Pair<Integer, Object[]> params) throws Exception {
         positiveAssert(params);
     }
@@ -186,5 +143,55 @@ class GetDeliveryCostTest {
                         distance, packageSize.name(), isFragile, workload.name()
                 )
         );
+    }
+
+    @Test
+    @Tag("Negative")
+    @DisplayName("Get exception with negative distance")
+    void getDeliveryCost_negativeDistance_negative_test() throws Exception {
+        Exception thrown =
+                assertThrows(
+                        Exception.class,
+                        () -> getDeliveryCost.invoke(-1, PackageSize.SMALL, false, Workload.NORMAL)
+                );
+        assertEquals(ErrorMessages.NEGATIVE_DISTANCE_ERROR, thrown.getMessage());
+    }
+
+    @Test
+    @Tag("Negative")
+    @DisplayName("Get exception with fragile package")
+    void getDeliveryCost_fragilePackage_negative_test() throws Exception {
+        Exception thrown =
+                assertThrows(
+                        Exception.class,
+                        () -> getDeliveryCost.invoke(31, PackageSize.SMALL, true, Workload.NORMAL)
+                );
+        assertEquals(ErrorMessages.FRAGILE_PACKAGE_ERROR, thrown.getMessage());
+    }
+
+    static Stream<Object[]> paramsNullValues() {
+        Object[] nullPackageSize = {31, null, true, Workload.NORMAL};
+        Object[] nullWorkload = {31, PackageSize.SMALL, true, null};
+        return Stream.of(nullPackageSize, nullWorkload);
+    }
+
+    @ParameterizedTest
+    @MethodSource("paramsNullValues")
+    @Tag("Negative")
+    @DisplayName("Get exception with null params")
+    void getDeliveryCost_nullParams_negative_test(int distance, PackageSize packageSize, boolean isFragile, Workload workload) throws Exception {
+        Exception trowSizeNull =
+                assertThrows(
+                        Exception.class,
+                        () -> getDeliveryCost.invoke(distance, packageSize, isFragile, workload)
+                );
+        assertEquals(ErrorMessages.PARAMS_NULL_ERROR, trowSizeNull.getMessage());
+
+        Exception trowWorkloadNull =
+                assertThrows(
+                        Exception.class,
+                        () -> getDeliveryCost.invoke(distance, packageSize, isFragile, workload)
+                );
+        assertEquals(ErrorMessages.PARAMS_NULL_ERROR, trowWorkloadNull.getMessage());
     }
 }
